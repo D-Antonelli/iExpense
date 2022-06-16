@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     @StateObject var expenses = Expenses()
     @State private var showingAddExpense = false
@@ -15,16 +16,21 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(item.name)
+                                    .font(.headline)
+                                Text(item.type)
+                            }
+                            
+                            Spacer()
+                            
+                            Text(item.amount, format: .currency(code: "USD"))
+                            
                         }
-                        
-                        Spacer()
-                        Text(item.amount, format: .currency(code: "USD"))
-                    }
+                        .foregroundColor(Color.white)
+                        .listRowBackground(getColor(for: item.amount))
+  
                 }
                 .onDelete(perform: removeItems)
             }
@@ -45,6 +51,27 @@ struct ContentView: View {
     
     func removeItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
+    }
+    
+    func getColor(for amount: Double) -> some View {
+        if(amount < 50.00) {
+            return Color.green
+        }
+        else if(amount < 500.00) {
+            return Color.yellow
+        }
+        
+        else if(amount < 1000.00) {
+            return Color.orange
+        }
+        
+        else if(amount < 10000.00) {
+            return Color.purple
+        }
+        else if(amount >= 10000.00) {
+            return Color.red
+        }
+        return Color.clear
     }
 }
 
