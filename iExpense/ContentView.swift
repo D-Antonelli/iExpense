@@ -7,6 +7,50 @@
 
 import SwiftUI
 
+struct ListRowView: View {
+
+    
+    var item: ExpenseItem
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(item.name)
+                    .font(.headline)
+                Text(item.type)
+            }
+            
+            Spacer()
+            
+            Text(item.amount, format: .currency(code: "USD"))
+            
+        }
+        .foregroundColor(Color.white)
+        .listRowBackground(getColor(for: item.amount))
+    }
+    
+    func getColor(for amount: Double) -> some View {
+        if(amount < 50.00) {
+            return Color.green
+        }
+        else if(amount < 500.00) {
+            return Color.yellow
+        }
+        
+        else if(amount < 1000.00) {
+            return Color.orange
+        }
+        
+        else if(amount < 10000.00) {
+            return Color.purple
+        }
+        else if(amount >= 10000.00) {
+            return Color.red
+        }
+        return Color.clear
+    }
+}
+
 
 struct ContentView: View {
     @StateObject var expenses = Expenses()
@@ -16,20 +60,7 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(expenses.items) { item in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(item.name)
-                                    .font(.headline)
-                                Text(item.type)
-                            }
-                            
-                            Spacer()
-                            
-                            Text(item.amount, format: .currency(code: "USD"))
-                            
-                        }
-                        .foregroundColor(Color.white)
-                        .listRowBackground(getColor(for: item.amount))
+                    ListRowView(item: item)
   
                 }
                 .onDelete(perform: removeItems)
@@ -53,26 +84,6 @@ struct ContentView: View {
         expenses.items.remove(atOffsets: offsets)
     }
     
-    func getColor(for amount: Double) -> some View {
-        if(amount < 50.00) {
-            return Color.green
-        }
-        else if(amount < 500.00) {
-            return Color.yellow
-        }
-        
-        else if(amount < 1000.00) {
-            return Color.orange
-        }
-        
-        else if(amount < 10000.00) {
-            return Color.purple
-        }
-        else if(amount >= 10000.00) {
-            return Color.red
-        }
-        return Color.clear
-    }
 }
 
 struct ContentView_Previews: PreviewProvider {
