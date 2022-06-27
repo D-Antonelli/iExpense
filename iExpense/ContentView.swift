@@ -10,24 +10,27 @@ import SwiftUI
 struct ListRowView: View {
 
     
-    var item: ExpenseItem
+    var category: Category
     
     var body: some View {
-        Section(header: Text(item.type)) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(item.name)
-                        .font(.headline)
-                    Text(item.type)
+        Section(header: Text(category.name)) {
+            ForEach(category.items) { item in
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(item.name)
+                            .font(.headline)
+                        Text(item.type)
+                    }
+                    
+                    Spacer()
+                    
+                    Text(item.amount, format: .currency(code: "USD"))
+                    
                 }
-                
-                Spacer()
-                
-                Text(item.amount, format: .currency(code: "USD"))
-                
+                .foregroundColor(Color.white)
+                .listRowBackground(getColor(for: item.amount))
             }
-            .foregroundColor(Color.white)
-            .listRowBackground(getColor(for: item.amount))
+
         }
 
     }
@@ -62,8 +65,8 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(expenses.items) { item in
-                    ListRowView(item: item)
+                ForEach(expenses.items) { category in
+                    ListRowView(category: category)
   
                 }
                 .onDelete(perform: removeItems)
