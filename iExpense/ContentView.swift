@@ -13,20 +13,23 @@ struct ListRowView: View {
     var item: ExpenseItem
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(item.name)
-                    .font(.headline)
-                Text(item.type)
+        Section(header: Text(item.type)) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(item.name)
+                        .font(.headline)
+                    Text(item.type)
+                }
+                
+                Spacer()
+                
+                Text(item.amount, format: .currency(code: "USD"))
+                
             }
-            
-            Spacer()
-            
-            Text(item.amount, format: .currency(code: "USD"))
-            
+            .foregroundColor(Color.white)
+            .listRowBackground(getColor(for: item.amount))
         }
-        .foregroundColor(Color.white)
-        .listRowBackground(getColor(for: item.amount))
+
     }
     
     func getColor(for amount: Double) -> some View {
