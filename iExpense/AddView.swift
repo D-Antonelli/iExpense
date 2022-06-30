@@ -12,7 +12,7 @@ struct AddView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var name = ""
-    @State private var type = "Personal"
+    @State private var type: Sections = .personal
     @State private var currencyCode = "USD"
     @State private var amount = 0.0
     
@@ -25,7 +25,6 @@ struct AddView: View {
         self.numberFormatter.currencyCode = currencyCode
     }
     
-    let types = ["Business", "Personal"]
     let currencyCodes = ["USD", "GBP", "EUR"]
     
     var body: some View {
@@ -34,8 +33,8 @@ struct AddView: View {
                 TextField("Name", text: $name)
                 
                 Picker("Type", selection: $type) {
-                    ForEach(types, id: \.self) {
-                        Text($0)
+                    ForEach(Sections.allCases, id: \.self) {
+                        Text($0.rawValue)
                     }
                 }
                 
@@ -57,7 +56,7 @@ struct AddView: View {
             .navigationTitle("Add new expense")
             .toolbar {
                 Button("Save") {
-                    let item = ExpenseItem(name: name, type: type, amount: amount)
+                    let item = ExpenseItem(name: name, type: type.rawValue, amount: amount)
                     expenses.items.append(item)
                     dismiss()
                 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExpenseViewCell: View {
     
-    @Binding var item: ExpenseItem
+    var item: ExpenseItem
     
     var body: some View {
         HStack {
@@ -51,6 +51,6 @@ struct ExpenseViewCell: View {
 
 struct ExpenseViewCell_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseViewCell(item: .constant(ExpenseItem(name: "Grocery", type: Sections.personal.rawValue, amount: 50)))
+        ExpenseViewCell(item: ExpenseItem(name: "Grocery", type: Sections.personal.rawValue, amount: 50))
     }
 }

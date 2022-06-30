@@ -14,12 +14,12 @@ struct ContentView: View {
     @StateObject var expenses = Expenses()
     @State private var showingAddExpense = false
     
-    var businessExpenses: [Binding<ExpenseItem>] {
-        $expenses.items.filter { $0.type.wrappedValue == "Business" }
+    var businessExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type == "Business" }
     }
     
-    var personalExpenses: [Binding<ExpenseItem>] {
-        $expenses.items.filter { $0.type.wrappedValue == "Personal"}
+    var personalExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type  == "Personal"}
     }
     
     
@@ -34,8 +34,8 @@ struct ContentView: View {
                             Text("No expenses available")
                         }
                         
-                        ForEach(filteredExpenses) { $item in
-                            ExpenseViewCell(item: $item)
+                        ForEach(filteredExpenses) { item in
+                            ExpenseViewCell(item: item)
                         }
                         .onDelete {indexSet in
                             indexSet.forEach { index in
