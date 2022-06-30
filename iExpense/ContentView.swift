@@ -8,31 +8,29 @@
 import SwiftUI
 
 struct ListRowView: View {
-
     
-    var category: Category
+    
+    var item: ExpenseItem
     
     var body: some View {
-        Section(header: Text(category.name)) {
-            ForEach(category.items) { item in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(item.name)
-                            .font(.headline)
-                        Text(item.type)
-                    }
-                    
-                    Spacer()
-                    
-                    Text(item.amount, format: .currency(code: "USD"))
-                    
+        Section(header: Text(item.type)) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(item.name)
+                        .font(.headline)
+                    Text(item.type)
                 }
-                .foregroundColor(Color.white)
-                .listRowBackground(getColor(for: item.amount))
+                
+                Spacer()
+                
+                Text(item.amount, format: .currency(code: "USD"))
+                
+                    .foregroundColor(Color.white)
+                    .listRowBackground(getColor(for: item.amount))
             }
-
+            
         }
-
+        
     }
     
     func getColor(for amount: Double) -> some View {
@@ -62,14 +60,50 @@ struct ContentView: View {
     @StateObject var expenses = Expenses()
     @State private var showingAddExpense = false
     
+    var businessExpenses: [Binding<ExpenseItem>] {
+        $expenses.items.filter { $0.type.wrappedValue == "Business" }
+    }
+    
+    var personalExpenses: [Binding<ExpenseItem>] {
+        $expenses.items.filter { $0.type.wrappedValue == "Personal"}
+    }
+
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(expenses.items) { category in
-                    ListRowView(category: category)
-  
+                ForEach(Sections.allCases, id: \.self) { section in
+                    Section(header: Text(section.rawValue)) {
+                        let filteredExpenses = section == .business ? businessExpenses : personalExpenses
+                        
+                        ForEach(filteredExpenses) { $item in
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(item.name)
+                                        .font(.headline)
+                                    Text(item.type)
+                                }
+                                
+                                Spacer()
+                                
+                                Text(item.amount, format: .currency(code: "USD"))
+                                    .foregroundColor(Color.white)
+                                    .listRowBackground(getColor(for: item.amount))
+                            }
+                        }
+                        .onDelete {indexSet in
+                            indexSet.forEach { index in
+                                let expenseToDelete = filteredExpenses[index]
+                                expenses.items = expenses.items.filter { $0.id != expenseToDelete.id }
+                            }
+
+                        
+                    }
+                   
+                
                 }
-                .onDelete(perform: removeItems)
+                
+            }
             }
             .navigationTitle("iExpense")
             .toolbar {
@@ -86,8 +120,26 @@ struct ContentView: View {
         
     }
     
-    func removeItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+    
+    func getColor(for amount: Double) -> some View {
+        if(amount < 30.00) {
+            return Color.green
+        }
+        else if(amount < 100.00) {
+            return Color.yellow
+        }
+        
+        else if(amount < 300) {
+            return Color.orange
+        }
+        
+        else if(amount < 500) {
+            return Color.purple
+        }
+        else if(amount >= 500) {
+            return Color.red
+        }
+        return Color.clear
     }
     
 }

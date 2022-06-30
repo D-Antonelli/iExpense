@@ -17,7 +17,7 @@ struct AddView: View {
     @State private var amount = 0.0
     
     private var numberFormatter: NumberFormatter
-
+    
     init(expenses: Expenses, numberFormatter: NumberFormatter = NumberFormatter()) {
         self.expenses = expenses
         self.numberFormatter = numberFormatter
@@ -58,7 +58,7 @@ struct AddView: View {
             .toolbar {
                 Button("Save") {
                     let item = ExpenseItem(name: name, type: type, amount: amount)
-                    expenses.add(item: Category(name: item.type, items: [item]))
+                    expenses.items.append(item)
                     dismiss()
                 }
             }
