@@ -36,6 +36,9 @@ struct ContentView: View {
                         
                         ForEach(filteredExpenses) { item in
                             ExpenseViewCell(item: item)
+                                .accessibilityLabel("\(item.name)")
+                                .accessibilityValue("\(item.amount)")
+                                .accessibilityHint("\(item.type)")
                         }
                         .onDelete {indexSet in
                             indexSet.forEach { index in
